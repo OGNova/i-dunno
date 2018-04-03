@@ -1,0 +1,105 @@
+import gevent
+import requests
+
+from disco.bot import Plugin
+from gevent.pool import Pool
+from PIL import Image
+from six import BytesIO
+
+from aetherya.constants import (
+  CDN_URL, EMOJI_RE
+)
+
+
+class TutorialPlugin(Plugin):
+
+  def get_emoji_url(self, emoji):
+    return CDN_URL.format('-'.join(
+      char.encode('unicode_escape').decode('utf-8')[2:].lstrip('0')
+      for char in emoji))
+
+  @Plugin.command('cat', global_=True)
+  def cat(self, event):
+    for _ in range(3):
+      try:
+        r = requests.get('http://aws.random.cat/meow')
+        r.raise_for_status()
+      except:
+        continue
+    
+      url = r.json()['file']
+      if not url.endswith('.gif'):
+        break
+    else:
+      return event.msg.reply('404 cat not found :(')
+
+    r = requests.get(url)
+    r.raise_for_status()
+    event.msg.reply('', attachments=[('cat.jpg', r.content)])
+
+  @Plugin.command('jumbo', '<emojis:str...>')
+  def jumbo(self, event, emojis):
+    urls = []
+
+    for emoji in emojis.split(' ')[:5]:
+      if EMOJI_RE.match(emoji):
+        _, eid = EMOJI_RE.findall(emoji)[0]
+        urls.append('https://discordapp.com/api/emojis/{}.png'.format(eid))
+      else:
+        urls.append(self.get_emoji_url(emoji))
+
+    width, height, images = 0, 0, []
+
+    for r in Pool(6).imap(requests.get, urls):
+      try:
+        r.raise_for_status()
+      except requests.HTTPError:
+        return
+
+      img = Image.open(BytesIO(r.content))
+      height = img.height if img.height > height else height
+      width += img.width + 10
+      images.append(img)
+      
+    image = Image.new('RGBA', (width, height))
+    width_offset = 0
+    for img in images:
+      image.paste(img, (width_offset, 0))
+      width_offset += img.width + 10
+
+    combined = BytesIO()
+    image.save(combined, 'png', quality=55)
+    combined.seek(0)
+    return event.msg.reply('', attachments=[('emoji.png', combined)])
+
+  @Plugin.command('ping')
+  def command_ping(self, event):
+      event.msg.reply('Pong!')
+
+  @Plugin.command('echo', '<content:str...>')
+  def echo_command(self, event, content):
+    event.msg.reply(content)
+
+  tags = {}
+
+  @Plugin.command('tag', '<name:str> [value:str...]')
+  def on_tag_command(self, event, name, value=None):
+    
+    if value:
+      self.tags[name] = value
+      event.msg.reply(':ok_hand: created tag `{}`'.format(name))
+    else:
+      if name in self.tags.keys():
+        return event.msg.reply(self.tags[name])
+      else:
+        return event.msg.reply('Unknown tag: `{}`'.format(name))
+
+  @Plugin.command('shutdown')
+  def shutdown_command(self, event):
+    event.msg.reply('Bye!')
+    self.client.gw.ws_event.set()
+
+  @Plugin.command('restart')
+  def restart_command(self, event):
+    event.msg.reply('<:cog:430175162378223628> Restarting.')
+    self.client.gw.ws.close(status=4009)
