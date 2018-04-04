@@ -1,9 +1,10 @@
 import pprint
+import gevent
 
 from disco.bot import Plugin
 
 from disco.types.message import MessageEmbed
-from disco.types.guild import Guild
+import disco.types.permissions as permissions
 
 from datetime import datetime
 
@@ -13,8 +14,30 @@ from aetherya.constants import (
 
 PY_CODE_BLOCK = u'```py\n{}\n```'
 CODE_BLOCK = u'```\n{}\n```'
+PERMS_BLOCK = u'```\n{}\n```'
 
 class CorePlugin(Plugin):
+  def wait_for_plugin_changes(self):
+    import gevent_inotifiyx as inotify
+    import socket
+
+    fd = inotify.init()
+    inotify.add_watch(fd, 'aetherya/plugins/', inotify.IN_MODIFY)
+    while True:
+      events = inotify.get_events(fd)
+      for event in events:
+        if event.name.startswith('core.py'):
+          continue
+        
+        plugin_name = '{}Plugin'.format(event.name.split('.', 1)[0].title())
+        plugin = next((v for k, v in self.bot.plugins.items() if k.lower() == plugin_name.lower()), None)
+        if plugin:
+          self.log.info('Detected change in %s, reloading...', plugin_name)
+          try:
+            plugin.reload()
+          except Exception:
+            self.log.exception('Failed to reload: ')
+
   @Plugin.listen('MessageCreate')
   def on_message_create(self, event):
     if event.message.author.bot:
@@ -114,4 +137,4 @@ class CorePlugin(Plugin):
   @Plugin.command('perms')
   def perms_command(self, event):
     perms = event.guild.get_permissions(AETHERYA_UID)
-    event.msg.reply(CODE_BLOCK.format(perms))
+    event.msg.reply(PERMS_BLOCK.format("\n".join([k for k, v in perms.to_dict().items() if v])))
