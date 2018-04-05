@@ -1,18 +1,17 @@
 version: '2'
-
 services:
+  db:
+    build: ./docker/database/
+    volumes:
+      - postgres:/var/lib/postgresql/data:rw
   bot:
-    build: 
-      context: .
-      dockerfile: ./Dockerfile
+    build: .
+    command: python manage.py bot -e docker
+    volumes:
+      - .:/opt/aetherya
+    ports:
+      - "7272:7171"
     depends_on:
       - db
-    volumes:
-      - ./:/app
-
-  db:
-    image: postgres:10
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
-      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+volumes:
+  postgres: {}

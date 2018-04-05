@@ -6,9 +6,7 @@ ENV ENV docker
 RUN mkdir /opt/aetherya
 
 ADD requirements.txt /opt/aetherya/
-RUN python -m pip install -r /opt/aetherya/requirements.txt
+RUN pip install -r /opt/aetherya/requirements.txt
 
 ADD . /opt/aetherya/
 WORKDIR /opt/aetherya
-
-CMD ["python -m disco.cli --config config.yaml"]
