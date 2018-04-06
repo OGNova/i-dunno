@@ -24,7 +24,7 @@ class BotSupervisor(object):
         signal.signal(signal.SIGUSR1, self.handle_sigusr1)
 
     def handle_sigusr1(self, signum, frame):
-        print 'SIGUSR1 - RESTARTING'
+        print('SIGUSR1 - RESTARTING')
         gevent.spawn(self.restart)
 
     def start(self):
