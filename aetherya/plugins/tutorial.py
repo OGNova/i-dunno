@@ -6,7 +6,6 @@ from gevent.pool import Pool
 from PIL import Image
 from six import BytesIO
 
-from aetherya.models.message import Message
 from aetherya.constants import (
   CDN_URL, EMOJI_RE
 )

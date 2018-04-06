@@ -1,17 +1,7 @@
 version: '2'
 services:
-  db:
-    build: ./docker/database/
-    volumes:
-      - postgres:/var/lib/postgresql/data:rw
   bot:
     build: .
     command: python manage.py bot -e docker
     volumes:
       - .:/opt/aetherya
-    ports:
-      - "7272:7171"
-    depends_on:
-      - db
-volumes:
-  postgres: {}
