@@ -1,1 +1,5 @@
+# Folders
+aetherya/__pycache__
+aetherya/plugins/__pycache__
+
 config.yaml

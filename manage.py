@@ -21,7 +21,7 @@ class BotSupervisor(object):
         self.start()
 
     def bind_signals(self):
-        signal.signal(signal.SIGUSR1, self.handle_sigusr1)
+        signal.signal(signal.SIGTERM, self.handle_sigusr1)
 
     def handle_sigusr1(self, signum, frame):
         print('SIGUSR1 - RESTARTING')
