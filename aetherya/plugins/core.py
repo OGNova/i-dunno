@@ -19,6 +19,7 @@ CODE_BLOCK = u'```\n{}\n```'
 PERMS_BLOCK = u'```\n{}\n```'
 
 BASE_DIR = 'data/guilds/{}.json'
+DEFAULT_CONFIG = 'data/default_config.json'
 
 class CorePlugin(Plugin):
   def wait_for_plugin_changes(self):
@@ -59,9 +60,7 @@ class CorePlugin(Plugin):
 
       if len(commands):
           print("[LOG] [CMD] [{}] {} ({}) ran command {}".format(event.message.timestamp, event.message.author.username, event.message.author.id, commands[0][0].name))
-          print('Pre fire')
           commands[0][0].plugin.execute(CommandEvent(commands[0][0], event.message, commands[0][1]))
-          print('Post fire')
 
   @Plugin.listen('Ready')
   def on_ready(self, event):
@@ -99,6 +98,14 @@ class CorePlugin(Plugin):
     embed.add_field(name='Replayed Events', value=str(self.client.gw.replayed_events))
 
     self.client.api.channels_messages_create(AETHERYA_CONTROL_CHANNEL, embed=embed)
+
+  @Plugin.listen('GuildCreate')
+  def on_create(self, event):
+    with open(DEFAULT_CONFIG, 'r') as file:
+      data = json.load(file)
+
+      with open(BASE_DIR.format(event.guild.id), 'w') as config:
+        config.write(json.dumps(data, indent=2))
 
   @Plugin.command('eval')
   def eval_command(self, event):

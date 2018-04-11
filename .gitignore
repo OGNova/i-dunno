@@ -1,7 +1,7 @@
 # Folders
 aetherya/__pycache__
 aetherya/plugins/__pycache__
-data
+data/guilds
 util
 
 # Files
