@@ -1,13 +1,15 @@
 import gevent
 import requests
+import json
 
 from disco.bot import Plugin
 from gevent.pool import Pool
 from PIL import Image
 from six import BytesIO
+from pprint import pprint
 
 from aetherya.constants import (
-  CDN_URL, EMOJI_RE
+  CDN_URL, EMOJI_RE, CODE_BLOCK
 )
 
 
@@ -75,6 +77,43 @@ class TutorialPlugin(Plugin):
   @Plugin.command('ping')
   def command_ping(self, event):
       event.msg.reply('Pong!')
+
+  # TODO: Settings via this command. 
+  # @Plugin.command('config', '<key:str...>')
+  # def config_command(self, event, key):
+
+  #   configFolder = 'aetherya/configs'
+  #   data = json.load(open('{}/{}.json'.format(
+  #     configFolder, event.msg.guild.id
+  #   )))
+
+  #   event.msg.reply('The value of key {} is `{}`.'.format(
+  #     key, data['{}'.format(
+  #       key
+  #     )]
+  #   ))
+
+
+  @Plugin.command('settings', '[action:str] [key:str] [value:str...]')
+  def settings_command(self, event, action=None, key=None, value=None):
+    base_dir = 'data/guilds/{}.json'
+    with open(base_dir.format(event.msg.guild.id), 'r') as file:
+      data = json.load(file)
+
+    if action:
+      if action == 'edit':
+        data['{}'.format(
+          key
+        )] = '{}'.format(
+          value
+        )
+        with open(base_dir.format(event.msg.guild.id), 'w') as file:
+          file.write(json.dumps(data, indent=2))
+      else:
+        event.msg.reply(CODE_BLOCK.format(data))
+    else:
+      event.msg.reply(CODE_BLOCK.format(data))
+
 
   @Plugin.command('echo', '<content:str...>')
   def echo_command(self, event, content):

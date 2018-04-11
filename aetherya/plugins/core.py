@@ -1,7 +1,9 @@
 import pprint
+import json
 import gevent
 
 from disco.bot import Plugin
+from disco.bot.command import CommandEvent
 
 from disco.types.message import MessageEmbed
 import disco.types.permissions as permissions
@@ -15,6 +17,8 @@ from aetherya.constants import (
 PY_CODE_BLOCK = u'```py\n{}\n```'
 CODE_BLOCK = u'```\n{}\n```'
 PERMS_BLOCK = u'```\n{}\n```'
+
+BASE_DIR = 'data/guilds/{}.json'
 
 class CorePlugin(Plugin):
   def wait_for_plugin_changes(self):
@@ -39,18 +43,25 @@ class CorePlugin(Plugin):
             self.log.exception('Failed to reload: ')
 
   @Plugin.listen('MessageCreate')
-  def on_message_create(self, event):
+  def message_parser(self, event):
+    with open(BASE_DIR.format(event.message.guild.id), 'r') as file:
+      data = json.load(file)
     if event.message.author.bot:
       return
-    commands = self.bot.get_commands_for_message(
-        False,
-        {},
-        "!",
-        event.message
-    )
 
-    if len(commands):
-        print("[LOG] [CMD] [{}] {} ({}) ran command {}".format(event.message.timestamp, event.message.author.username, event.message.author.id, commands[0][0].name))
+    if event.message.content.startswith(data['prefix']):
+      commands = self.bot.get_commands_for_message(
+          False,
+          {},
+          data['prefix'],
+          event.message
+      )
+
+      if len(commands):
+          print("[LOG] [CMD] [{}] {} ({}) ran command {}".format(event.message.timestamp, event.message.author.username, event.message.author.id, commands[0][0].name))
+          print('Pre fire')
+          commands[0][0].plugin.execute(CommandEvent(commands[0][0], event.message, commands[0][1]))
+          print('Post fire')
 
   @Plugin.listen('Ready')
   def on_ready(self, event):

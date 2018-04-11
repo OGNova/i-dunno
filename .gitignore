@@ -1,5 +1,8 @@
 # Folders
 aetherya/__pycache__
 aetherya/plugins/__pycache__
+data
+util
 
+# Files
 config.yaml

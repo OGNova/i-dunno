@@ -13,3 +13,4 @@ OWNER_ID = '166304313004523520'
 # Misc.
 EMOJI_RE = re.compile(r'<:(.+):([0-9]+)>')
 CDN_URL = 'https://twemoji.maxcdn.com/2/72x72/{}.png'
+CODE_BLOCK = u'```\n{}\n```'
