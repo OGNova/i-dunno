@@ -24,7 +24,7 @@ class TutorialPlugin(Plugin):
   def cat(self, event):
     for _ in range(3):
       try:
-        r = requests.get('http://aws.random.cat/meow')
+        r = requests.get('https://aws.random.cat/meow')
         r.raise_for_status()
       except:
         continue

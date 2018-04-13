@@ -22,6 +22,11 @@ BASE_DIR = 'data/guilds/{}.json'
 DEFAULT_CONFIG = 'data/default_config.json'
 
 class CorePlugin(Plugin):
+  def load(self, ctx):
+    if ENV == 'prod':
+      self.spawn(self.wait_for_plugin_changes)
+
+
   def wait_for_plugin_changes(self):
     import gevent_inotifiyx as inotify
     import socket
@@ -42,25 +47,6 @@ class CorePlugin(Plugin):
             plugin.reload()
           except Exception:
             self.log.exception('Failed to reload: ')
-
-  @Plugin.listen('MessageCreate')
-  def message_parser(self, event):
-    with open(BASE_DIR.format(event.message.guild.id), 'r') as file:
-      data = json.load(file)
-    if event.message.author.bot:
-      return
-
-    if event.message.content.startswith(data['prefix']):
-      commands = self.bot.get_commands_for_message(
-          False,
-          {},
-          data['prefix'],
-          event.message
-      )
-
-      if len(commands):
-          print("[LOG] [CMD] [{}] {} ({}) ran command {}".format(event.message.timestamp, event.message.author.username, event.message.author.id, commands[0][0].name))
-          commands[0][0].plugin.execute(CommandEvent(commands[0][0], event.message, commands[0][1]))
 
   @Plugin.listen('Ready')
   def on_ready(self, event):
@@ -98,14 +84,6 @@ class CorePlugin(Plugin):
     embed.add_field(name='Replayed Events', value=str(self.client.gw.replayed_events))
 
     self.client.api.channels_messages_create(AETHERYA_CONTROL_CHANNEL, embed=embed)
-
-  @Plugin.listen('GuildCreate')
-  def on_create(self, event):
-    with open(DEFAULT_CONFIG, 'r') as file:
-      data = json.load(file)
-
-      with open(BASE_DIR.format(event.guild.id), 'w') as config:
-        config.write(json.dumps(data, indent=2))
 
   @Plugin.command('eval')
   def eval_command(self, event):
