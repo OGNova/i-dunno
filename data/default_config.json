@@ -1,5 +1,6 @@
 {
   "prefix": ">",
   "modLogChannel": "modlog",
-  "memberLog": "action_log"
+  "memberLog": "action_log",
+  "logging": "True"
 }

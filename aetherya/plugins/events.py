@@ -6,14 +6,18 @@ from disco.bot.command import CommandEvent
 from disco.util.snowflake import to_datetime
 
 from datetime import datetime
+from os import listdir
 
-BASE_DIR = 'data/guilds/{}.json'
+DATA_DIR = 'data/guilds/settings/{}.json'
 DEFAULT_CONFIG = 'data/default_config.json'
+
+TAGS_DIR = 'data/guilds/tags/{}.json'
+DEFAULT_TAGS = 'data/default_tags.json'
 
 class EventHandler(Plugin):
   @Plugin.listen('MessageCreate')
   def message_parser(self, event):
-    with open(BASE_DIR.format(event.message.guild.id), 'r') as file:
+    with open(DATA_DIR.format(event.message.guild.id), 'r') as file:
       data = json.load(file)
     if event.message.author.bot:
       return
@@ -32,16 +36,27 @@ class EventHandler(Plugin):
 
   @Plugin.listen('GuildCreate')
   def on_create(self, event):
-    with open(DEFAULT_CONFIG, 'r') as file:
-      data = json.load(file)
+    file = str(event.guild.id) + '.json'
 
-      with open(BASE_DIR.format(event.guild.id), 'w') as config:
-        config.write(json.dumps(data, indent=2))
+    if not file in listdir(DATA_DIR[:-7]):
+
+      with open(DEFAULT_CONFIG, 'r') as settings_file:
+        settings_data = json.load(settings_file)
+
+        with open(DATA_DIR.format(event.guild.id), 'w') as settings_config:
+          settings_config.write(json.dumps(settings_data, indent=2))
+
+    if not file in listdir(TAGS_DIR[:-7]):
+      with open(DEFAULT_TAGS, 'r') as tags_file:
+        tags_data = json.load(tags_file)
+
+        with open(TAGS_DIR.format(event.guild.id), 'w') as tags_config:
+          tags_config.write(json.dumps(tags_data, indent=2))
 
 
   @Plugin.listen('GuildMemberAdd')
   def on_member_join(self, event):
-    with open(BASE_DIR.format(event.guild.id), 'r') as file:
+    with open(DATA_DIR.format(event.guild.id), 'r') as file:
       config = json.load(file)
     
     created = humanize.naturaltime(datetime.utcnow() - to_datetime(event.user.id))

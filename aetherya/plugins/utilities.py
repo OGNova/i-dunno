@@ -7,6 +7,7 @@ from gevent.pool import Pool
 from PIL import Image
 from six import BytesIO
 from pprint import pprint
+from os import listdir
 
 from aetherya.constants import (
   CDN_URL, EMOJI_RE, CODE_BLOCK
@@ -96,7 +97,7 @@ class TutorialPlugin(Plugin):
 
   @Plugin.command('settings', '[action:str] [key:str] [value:str...]')
   def settings_command(self, event, action=None, key=None, value=None):
-    base_dir = 'data/guilds/{}.json'
+    base_dir = 'data/guilds/settings/{}.json'
     with open(base_dir.format(event.msg.guild.id), 'r') as file:
       data = json.load(file)
 
@@ -119,19 +120,39 @@ class TutorialPlugin(Plugin):
   def echo_command(self, event, content):
     event.msg.reply(content)
 
-  tags = {}
-
   @Plugin.command('tag', '<name:str> [value:str...]')
   def on_tag_command(self, event, name, value=None):
-    
+
+    tags_dir = 'data/guilds/tags/{}.json'
+
+    with open(tags_dir.format(event.msg.guild.id), 'r') as file:
+      data = json.load(file)
+
     if value:
-      self.tags[name] = value
-      event.msg.reply(':ok_hand: created tag `{}`'.format(name))
+      data['{}'.format(
+        name
+      )] = '{}'.format(
+        value
+      )
+
+      with open(tags_dir.format(event.msg.guild.id), 'w') as file:
+        file.write(json.dumps(data, indent=2))
+
+      event.msg.reply(':notepad_spiral: Created tag `{}` with content `{}`'.format(name, value))
+
     else:
-      if name in self.tags.keys():
-        return event.msg.reply(self.tags[name])
-      else:
-        return event.msg.reply('Unknown tag: `{}`'.format(name))
+      event.msg.reply(data['{}'.format(name)])
+
+
+
+    # if value:
+    #   self.tags[name] = value
+    #   event.msg.reply(':ok_hand: created tag `{}`'.format(name))
+    # else:
+    #   if name in self.tags.keys():
+    #     return event.msg.reply(self.tags[name])
+    #   else:
+    #     return event.msg.reply('Unknown tag: `{}`'.format(name))
 
   @Plugin.command('shutdown')
   def shutdown_command(self, event):
