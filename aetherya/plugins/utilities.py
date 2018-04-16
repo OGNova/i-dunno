@@ -79,22 +79,6 @@ class TutorialPlugin(Plugin):
   def command_ping(self, event):
       event.msg.reply('Pong!')
 
-  # TODO: Settings via this command. 
-  # @Plugin.command('config', '<key:str...>')
-  # def config_command(self, event, key):
-
-  #   configFolder = 'aetherya/configs'
-  #   data = json.load(open('{}/{}.json'.format(
-  #     configFolder, event.msg.guild.id
-  #   )))
-
-  #   event.msg.reply('The value of key {} is `{}`.'.format(
-  #     key, data['{}'.format(
-  #       key
-  #     )]
-  #   ))
-
-
   @Plugin.command('settings', '[action:str] [key:str] [value:str...]')
   def settings_command(self, event, action=None, key=None, value=None):
     base_dir = 'data/guilds/settings/{}.json'
@@ -142,17 +126,6 @@ class TutorialPlugin(Plugin):
 
     else:
       event.msg.reply(data['{}'.format(name)])
-
-
-
-    # if value:
-    #   self.tags[name] = value
-    #   event.msg.reply(':ok_hand: created tag `{}`'.format(name))
-    # else:
-    #   if name in self.tags.keys():
-    #     return event.msg.reply(self.tags[name])
-    #   else:
-    #     return event.msg.reply('Unknown tag: `{}`'.format(name))
 
   @Plugin.command('shutdown')
   def shutdown_command(self, event):
