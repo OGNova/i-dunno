@@ -112,6 +112,7 @@ class TutorialPlugin(Plugin):
         )
         with open(base_dir.format(event.msg.guild.id), 'w') as file:
           file.write(json.dumps(data, indent=2))
+        event.msg.reply('The key `{}` has been successfully edited to `{}`.'.format(key, value))
       else:
         event.msg.reply(CODE_BLOCK.format(data))
     else:

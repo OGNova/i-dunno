@@ -14,6 +14,9 @@ DEFAULT_CONFIG = 'data/default_config.json'
 TAGS_DIR = 'data/guilds/tags/{}.json'
 DEFAULT_TAGS = 'data/default_tags.json'
 
+POINTS_DIR = 'data/guilds/points/{}.json'
+DEFAULT_POINTS = 'data/default_points.json'
+
 class EventHandler(Plugin):
   @Plugin.listen('MessageCreate')
   def message_parser(self, event):
@@ -56,10 +59,21 @@ class EventHandler(Plugin):
 
   @Plugin.listen('GuildMemberAdd')
   def on_member_join(self, event):
+    now = datetime.now().strftime("%H:%M:%S")
+    
     with open(DATA_DIR.format(event.guild.id), 'r') as file:
       config = json.load(file)
     
     created = humanize.naturaltime(datetime.utcnow() - to_datetime(event.user.id))
     self.client.api.channels_messages_create(config['memberLog'], content='`[{}]` :inbox_tray: {}#{} (`{}`) joined ({})'.format(
-      humanize.naturaltime(datetime.utcnow()), event.user.username, event.user.discriminator, event.user.id, created
+      now, event.user.username, event.user.discriminator, event.user.id, created
     ))
+
+    file = str(event.user.id) + '.json'
+
+    if not file in listdir(POINTS_DIR[:-7]):
+      with open(DEFAULT_POINTS, 'r') as points_file:
+        points_data = json.load(points_file)
+
+        with open(POINTS_DIR, 'w') as points_config:
+          points_config.write(json.dumps(points_data))
