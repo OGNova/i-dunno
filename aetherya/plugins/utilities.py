@@ -10,11 +10,28 @@ from pprint import pprint
 from os import listdir
 
 from aetherya.constants import (
-  CDN_URL, EMOJI_RE, CODE_BLOCK
+  CDN_URL, EMOJI_RE, CODE_BLOCK, COG_EMOTE
 )
 
 
 class TutorialPlugin(Plugin):
+  def filter_roles(self, roles):
+    index = 0
+    highest = 0
+
+    response = ''
+
+    for role in roles:
+      if roles[role].position > highest:
+        highest = roles[role].position
+
+    while index != highest:
+      for role in roles:
+        if roles[role].position == index:
+          response = str(roles[role].id + ' - ' + roles[role].name + '\n' + response)
+          index += 1
+
+    return response
 
   def get_emoji_url(self, emoji):
     return CDN_URL.format('-'.join(
@@ -79,6 +96,7 @@ class TutorialPlugin(Plugin):
   def command_ping(self, event):
       event.msg.reply('Pong!')
 
+  @Plugin.command('set', '[action:str] [key:str] [value:str...]')
   @Plugin.command('settings', '[action:str] [key:str] [value:str...]')
   def settings_command(self, event, action=None, key=None, value=None):
     base_dir = 'data/guilds/settings/{}.json'
@@ -122,17 +140,32 @@ class TutorialPlugin(Plugin):
       with open(tags_dir.format(event.msg.guild.id), 'w') as file:
         file.write(json.dumps(data, indent=2))
 
-      event.msg.reply(':notepad_spiral: Created tag `{}` with content `{}`'.format(name, value))
+      event.msg.reply(':notepad_spiral: Created tag `{}`'.format(name))
 
     else:
       event.msg.reply(data['{}'.format(name)])
 
+  @Plugin.command('roles')
+  def roles_command(self, event):
+    buff = ''
+    for role in event.guild.roles.values():
+      role = ('{} - {}\n'.format(role.id, role.name))
+      if len(role) + len(buff) > 1990:
+        event.msg.reply(CODE_BLOCK.format(buff))
+        buff = ''
+      buff += role
+    return event.msg.reply(CODE_BLOCK.format(buff))
+
+    # roles = event.guild.roles.values()
+    # self.filter_roles(roles)
+
+
   @Plugin.command('shutdown')
   def shutdown_command(self, event):
-    event.msg.reply('Bye!')
+    event.msg.reply('{} Shutting down.'.format(COG_EMOTE))
     self.client.gw.ws_event.set()
 
   @Plugin.command('restart')
   def restart_command(self, event):
-    event.msg.reply('<:cog:430175162378223628> Restarting.')
+    event.msg.reply('{} Restarting.'.format(COG_EMOTE))
     self.client.gw.ws.close(status=4009)

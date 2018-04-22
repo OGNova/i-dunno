@@ -40,7 +40,7 @@ class MusicPlugin(Plugin):
 
     @Plugin.command('play', '<url:str>')
     def on_play(self, event, url):
-        item = YoutubeDLInput(url).pipe(BufferedOpusEncoderPlayable)
+        item = YoutubeDLInput(url, command='ffmpeg').pipe(BufferedOpusEncoderPlayable)
         self.get_player(event.guild.id).queue.append(item)
 
     @Plugin.command('pause')

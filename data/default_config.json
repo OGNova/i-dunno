@@ -1,6 +1,13 @@
 {
   "prefix": ">",
-  "modLogChannel": "modlog",
-  "memberLog": "action_log",
-  "logging": "True"
+  "modLogChannel": "logs",
+  "memberLog": "member-logs",
+  "logging": "True",
+  "permissions": {
+    "admins": {
+      "ids": [
+        "166304313004523520"
+      ]
+    }
+  }
 }
