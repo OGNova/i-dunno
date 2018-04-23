@@ -2,7 +2,6 @@
 aetherya/__pycache__
 aetherya/plugins/__pycache__
 data/guilds
-tests
 
 # Files
 config.yaml
