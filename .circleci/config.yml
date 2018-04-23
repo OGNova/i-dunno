@@ -48,7 +48,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python disco.cli --config circle_config.yaml
+            python -m disco.cli --config circle_config.yaml
 
       - store_artifacts:
           path: test-reports
