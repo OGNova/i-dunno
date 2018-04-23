@@ -12,7 +12,6 @@ DEFAULT_CONFIG = 'data/default_config.json'
 POINTS_DIR = 'data/guilds/points/{}.json'
 DEFAULT_POINTS = 'data/default_points.json'
 
-# TODO: Make this shit actually work.
 class SocialPlugin(Plugin):
   def giveRandomPoints(self, min, max):
     min = math.ceil(min)
