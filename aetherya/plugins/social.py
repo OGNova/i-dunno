@@ -41,3 +41,11 @@ class SocialPlugin(Plugin):
       data['points'] = int(data['points']) + points
       with open(POINTS_DIR.format(event.message.author.id), "w") as file:
         file.write(json.dumps(data, indent=2))
+
+  @Plugin.command('points', '[user:user|snowflake]')
+  def points_command(self, event, user=None):
+    if user:
+      print(user.id)
+
+    else:
+      print(event.msg.author.id)

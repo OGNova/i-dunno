@@ -130,7 +130,7 @@ class CorePlugin(Plugin):
     else:
       event.msg.reply('not 4 u')
   
-  @Plugin.command('perms')
-  def perms_command(self, event):
-    perms = event.guild.get_permissions(AETHERYA_UID)
-    event.msg.reply(PERMS_BLOCK.format("\n".join([k for k, v in perms.to_dict().items() if v])))
+  # @Plugin.command('perms')
+  # def perms_command(self, event):
+  #   perms = event.guild.get_permissions(AETHERYA_UID)
+  #   event.msg.reply(PERMS_BLOCK.format("\n".join([k for k, v in perms.to_dict().items() if v])))

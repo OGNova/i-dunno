@@ -160,6 +160,36 @@ class TutorialPlugin(Plugin):
     # roles = event.guild.roles.values()
     # self.filter_roles(roles)
 
+  @Plugin.command('perms', '[user:user|snowflake]')
+  def perm_command(self, event, user=None):
+    data_dir = 'data/guilds/settings/{}.json'
+    if user:
+      if user.id == 166304313004523520:
+        event.msg.reply('▰▰▰▰')
+      else:
+        with open(data_dir.format(event.msg.guild.id), 'r') as file:
+          data = json.load(file)
+
+        if user.id in data['permissions']['admins']['ids']:
+          event.msg.reply('▰▰▰▱')
+        elif user.id in data['permissions']['moderators']['ids']:
+          event.msg.reply('▰▰▱▱')
+        else:
+          event.msg.reply('▰▱▱▱')
+
+    else:
+      if event.msg.author.id == 166304313004523520:
+        event.msg.reply('▰▰▰▰')
+      else:
+        with open(data_dir.format(event.msg.guild.id), 'r') as file:
+          data = json.load(file)
+
+        if event.msg.author.id in data['permissions']['admins']['ids']:
+          event.msg.reply('▰▰▰▱')
+        elif event.msg.author.id in data['permissions']['moderators']['ids']:
+          event.msg.reply('▰▰▱▱')
+        else:
+          event.msg.reply('▰▱▱▱')
 
   @Plugin.command('shutdown')
   def shutdown_command(self, event):

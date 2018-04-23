@@ -5,9 +5,10 @@
   "logging": "True",
   "permissions": {
     "admins": {
-      "ids": [
-        "166304313004523520"
-      ]
+      "ids": []
+    },
+    "moderators": {
+      "ids": []
     }
   }
 }
