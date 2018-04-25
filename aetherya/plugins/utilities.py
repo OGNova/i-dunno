@@ -157,6 +157,7 @@ class TutorialPlugin(Plugin):
       buff += role
     return event.msg.reply(CODE_BLOCK.format(buff))
 
+    # TODO: Make this work.
     # roles = event.guild.roles.values()
     # self.filter_roles(roles)
 

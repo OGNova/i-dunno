@@ -14,4 +14,5 @@ COG_EMOTE = '<:cog:{}>'.format(COG_EMOTE_ID)
 # Misc.
 EMOJI_RE = re.compile(r'<:(.+):([0-9]+)>')
 CDN_URL = 'https://twemoji.maxcdn.com/2/72x72/{}.png'
+PY_CODE_BLOCK = u'```py\n{}\n```'
 CODE_BLOCK = u'```\n{}\n```'

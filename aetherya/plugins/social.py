@@ -45,7 +45,13 @@ class SocialPlugin(Plugin):
   @Plugin.command('points', '[user:user|snowflake]')
   def points_command(self, event, user=None):
     if user:
-      print(user.id)
+      with open(POINTS_DIR.format(user.id), 'r') as file:
+        data = json.load(file)
+
+      event.msg.reply('User {} has {} points, and is level {}.'.format(event.msg.guild.get_member(user).user.username, data['points'], data['level']))
 
     else:
-      print(event.msg.author.id)
+      with open(POINTS_DIR.format(event.msg.author.id), 'r') as file:
+        data = json.load(file)
+
+      event.msg.reply('You currently have {} points, and are level {}.'.format(data['points'], data['level']))

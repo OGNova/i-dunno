@@ -11,12 +11,8 @@ import disco.types.permissions as permissions
 from datetime import datetime
 
 from aetherya.constants import (
-  AETHERYA_CONTROL_CHANNEL, AETHERYA_UID, ENV, OWNER_ID
+  AETHERYA_CONTROL_CHANNEL, AETHERYA_UID, ENV, OWNER_ID, CODE_BLOCK
 )
-
-PY_CODE_BLOCK = u'```py\n{}\n```'
-CODE_BLOCK = u'```\n{}\n```'
-PERMS_BLOCK = u'```\n{}\n```'
 
 BASE_DIR = 'data/guilds/{}.json'
 DEFAULT_CONFIG = 'data/default_config.json'
@@ -128,9 +124,4 @@ class CorePlugin(Plugin):
         event.msg.reply(PY_CODE_BLOCK.format(result))
 
     else:
-      event.msg.reply('not 4 u')
-  
-  # @Plugin.command('perms')
-  # def perms_command(self, event):
-  #   perms = event.guild.get_permissions(AETHERYA_UID)
-  #   event.msg.reply(PERMS_BLOCK.format("\n".join([k for k, v in perms.to_dict().items() if v])))
+      return
