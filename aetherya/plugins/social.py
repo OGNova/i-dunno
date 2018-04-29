@@ -54,4 +54,17 @@ class SocialPlugin(Plugin):
       with open(POINTS_DIR.format(event.msg.author.id), 'r') as file:
         data = json.load(file)
 
-      event.msg.reply('You currently have {} points, and are level {}.'.format(data['points'], data['level']))
+      # event.msg.reply('You currently have {} points, and are level {}.'.format(data['points'], data['level']))
+
+      realPoints = data['points'] / 100
+
+      multiple = 100
+
+      print(math.floor(realPoints))
+
+      remaining_points = 10 - math.floor(realPoints)
+
+      prog_bar = '▰' * math.floor(realPoints)
+      remaining = '▱' * remaining_points
+
+      event.msg.reply(prog_bar + remaining)

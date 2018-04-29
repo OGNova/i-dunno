@@ -192,6 +192,15 @@ class TutorialPlugin(Plugin):
         else:
           event.msg.reply('▰▱▱▱')
 
+  @Plugin.command('emojis')
+  def emojis_command(self, event):
+    # event.msg.reply(CODE_BLOCK.format(event.msg.guild.emojis))
+
+    for emoji in event.msg.guild.emojis:
+      print(emoji)
+
+    # print(event.msg.guild.emojis)
+
   @Plugin.command('shutdown')
   def shutdown_command(self, event):
     event.msg.reply('{} Shutting down.'.format(COG_EMOTE))
