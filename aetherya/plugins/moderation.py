@@ -3,7 +3,7 @@ import json
 from disco.bot import Plugin
 from disco.types.guild import GuildMember
 
-DATA_DIR = 'data/guilds/settings/{}.json'
+DATA_DIR = 'data/guilds/{}/settings/settings.json'
 
 class ModerationPlugin(Plugin):
   @Plugin.command('ban', '<user:user|snowflake> [reason:str...]')

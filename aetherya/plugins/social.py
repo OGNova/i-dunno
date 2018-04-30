@@ -6,10 +6,10 @@ from disco.bot import Plugin
 
 from os import listdir
 
-DATA_DIR = 'data/guilds/settings/{}.json'
+DATA_DIR = 'data/guilds/{}/settings/settings.json'
 DEFAULT_CONFIG = 'data/default_config.json'
 
-POINTS_DIR = 'data/guilds/points/{}.json'
+POINTS_DIR = 'data/guilds/{}/points/{}.json'
 DEFAULT_POINTS = 'data/default_points.json'
 
 class SocialPlugin(Plugin):
@@ -21,7 +21,7 @@ class SocialPlugin(Plugin):
 
   @Plugin.listen('MessageCreate')
   def message_listener(self, event):
-    if event.message.author.id == 379402095914123264:
+    if event.message.author.bot:
       return
 
     with open(DATA_DIR.format(event.message.guild.id), 'r') as file:
@@ -33,7 +33,7 @@ class SocialPlugin(Plugin):
       if event.message.content.startswith(data['prefix']):
         return
 
-      with open(POINTS_DIR.format(event.message.author.id), 'r') as file:
+      with open(POINTS_DIR.format(event.message.guild.id, event.message.author.id), 'r') as file:
         data = json.load(file)
 
       points = self.giveRandomPoints(min, max)

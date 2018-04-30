@@ -10,5 +10,7 @@
     "moderators": {
       "ids": []
     }
-  }
+  },
+  "minPoints": "25",
+  "maxPoints": "100"
 }

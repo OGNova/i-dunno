@@ -13,6 +13,9 @@ from aetherya.constants import (
   CDN_URL, EMOJI_RE, CODE_BLOCK, COG_EMOTE
 )
 
+DATA_DIR = 'data/guilds/{}/settings/settings.json'
+
+TAGS_DIR = 'data/guilds/{}/tags/tags.json'
 
 class TutorialPlugin(Plugin):
   def filter_roles(self, roles):
@@ -99,8 +102,7 @@ class TutorialPlugin(Plugin):
   @Plugin.command('set', '[action:str] [key:str] [value:str...]')
   @Plugin.command('settings', '[action:str] [key:str] [value:str...]')
   def settings_command(self, event, action=None, key=None, value=None):
-    base_dir = 'data/guilds/settings/{}.json'
-    with open(base_dir.format(event.msg.guild.id), 'r') as file:
+    with open(DATA_DIR.format(event.msg.guild.id), 'r') as file:
       data = json.load(file)
 
     if action:
@@ -110,7 +112,7 @@ class TutorialPlugin(Plugin):
         )] = '{}'.format(
           value
         )
-        with open(base_dir.format(event.msg.guild.id), 'w') as file:
+        with open(DATA_DIR.format(event.msg.guild.id), 'w') as file:
           file.write(json.dumps(data, indent=2))
         event.msg.reply('The key `{}` has been successfully edited to `{}`.'.format(key, value))
       else:
@@ -125,10 +127,7 @@ class TutorialPlugin(Plugin):
 
   @Plugin.command('tag', '<name:str> [value:str...]')
   def on_tag_command(self, event, name, value=None):
-
-    tags_dir = 'data/guilds/tags/{}.json'
-
-    with open(tags_dir.format(event.msg.guild.id), 'r') as file:
+    with open(TAGS_DIR.format(event.msg.guild.id), 'r') as file:
       data = json.load(file)
 
     if value:

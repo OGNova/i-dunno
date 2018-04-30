@@ -8,13 +8,13 @@ from disco.util.snowflake import to_datetime
 from datetime import datetime
 from os import listdir
 
-DATA_DIR = 'data/guilds/settings/{}.json'
+DATA_DIR = 'data/guilds/{}/settings/settings.json'
 DEFAULT_CONFIG = 'data/default_config.json'
 
-TAGS_DIR = 'data/guilds/tags/{}.json'
+TAGS_DIR = 'data/guilds/{}/tags/tags.json'
 DEFAULT_TAGS = 'data/default_tags.json'
 
-POINTS_DIR = 'data/guilds/points/{}.json'
+POINTS_DIR = 'data/guilds/{}/points/{}.json'
 DEFAULT_POINTS = 'data/default_points.json'
 
 class EventHandler(Plugin):
@@ -39,9 +39,9 @@ class EventHandler(Plugin):
 
   @Plugin.listen('GuildCreate')
   def on_create(self, event):
-    file = str(event.guild.id) + '.json'
+    settings_file = 'settings.json'
 
-    if not file in listdir(DATA_DIR[:-7]):
+    if not settings_file in listdir('data/guilds/{}/settings'.format(event.guild.id)):
 
       with open(DEFAULT_CONFIG, 'r') as settings_file:
         settings_data = json.load(settings_file)
@@ -49,7 +49,9 @@ class EventHandler(Plugin):
         with open(DATA_DIR.format(event.guild.id), 'w') as settings_config:
           settings_config.write(json.dumps(settings_data, indent=2))
 
-    if not file in listdir(TAGS_DIR[:-7]):
+    tags_file = 'tags.json'
+
+    if not tags_file in listdir('data/guilds/{}/tags'.format(event.guild.id)):
       with open(DEFAULT_TAGS, 'r') as tags_file:
         tags_data = json.load(tags_file)
 
@@ -71,7 +73,7 @@ class EventHandler(Plugin):
 
     file = str(event.user.id) + '.json'
 
-    if not file in listdir(POINTS_DIR[:-7]):
+    if not file in listdir('data/guilds/{}/points'.format(event.guild.id)):
       with open(DEFAULT_POINTS, 'r') as points_file:
         points_data = json.load(points_file)
 

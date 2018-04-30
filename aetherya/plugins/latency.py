@@ -7,7 +7,7 @@ import contextlib
 from collections import deque
 from holster.util import SimpleObject
 
-from disco.bot import Plugin, CommandLevels
+from disco.bot import Plugin
 from disco.gateway.packets import OPCode, RECV, SEND
 from disco.util.snowflake import to_unix_ms
 
