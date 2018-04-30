@@ -77,4 +77,5 @@ class LatencyPlugin(Plugin):
             'RTT test complete\n' +
             '  Initial Send: `{}ms`\n'.format(int(inner.duration * 1000)) +
             '  Total RTT: `{}ms`\n'.format(int(outer.duration * 1000)) +
-            '  Timestamp diff: `{}ms`\n'.format(int(inner.start * 1000) - to_unix_ms(msg.id)))
+            '  Timestamp diff: `{}ms`\n'.format(int(inner.start * 1000) - to_unix_ms(msg.id))
+            )

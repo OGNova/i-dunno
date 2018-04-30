@@ -2,6 +2,7 @@
   "prefix": ">",
   "modLogChannel": "logs",
   "memberLog": "member-logs",
+  "muteRole": "Muted",
   "logging": "True",
   "permissions": {
     "admins": {

@@ -3,6 +3,8 @@ import json
 from disco.bot import Plugin
 from disco.types.guild import GuildMember
 
+from aetherya.util.input import parse_duration
+
 DATA_DIR = 'data/guilds/{}/settings/settings.json'
 
 class ModerationPlugin(Plugin):
@@ -74,5 +76,24 @@ class ModerationPlugin(Plugin):
           member.user if member else user, member.user.id if member else user.id, event.msg.author.username, event.msg.author.discriminator, 'No reason provided.'
         ))
 
-  # @Plugin.command('mute', '<user:user|snowflake> [reason:str...]')
-  # @Plugin.command('tempmute', '<user:user|snowflake> <duration:str> [reason:str...]')
+  @Plugin.command('mute', '<user:user|snowflake> [reason:str...]')
+  def mute_command(self, event, user, reason=None):
+    with open(DATA_DIR.format(event.guild.id), 'r') as file:
+      config = json.load(file)
+    
+    member = None
+    
+    if isinstance(user, GuildMember):
+      user.add_role(data['muteRole'], reason=reason)
+    else:
+      member = event.guild.get_member(user)
+      if member:
+        member.add_role(data['muteRole'], reason=reason)
+      else:
+        return event.msg.reply('invalid user')
+    if reason:
+      event.msg.reply(':ok_hand: muted {} (`{}`)'.format(member.user if member else user, reason))
+
+      with open(DATA_DIR.format(event.guild.id), 'r') as file:
+        config = json.load(file)
+      
