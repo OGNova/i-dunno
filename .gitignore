@@ -2,6 +2,7 @@
 aetherya/__pycache__
 aetherya/plugins/__pycache__
 aetherya/util/__pycache__
+aetherya/models/__pycache__
 data/guilds
 
 # Files
