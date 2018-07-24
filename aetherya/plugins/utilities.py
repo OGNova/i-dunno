@@ -116,9 +116,9 @@ class TutorialPlugin(Plugin):
           file.write(json.dumps(data, indent=2))
         event.msg.reply('The key `{}` has been successfully edited to `{}`.'.format(key, value))
       else:
-        event.msg.reply(CODE_BLOCK.format(data))
+        event.msg.reply('\n'.join('{}'.format(data)))
     else:
-      event.msg.reply(CODE_BLOCK.format(data))
+      event.msg.reply('\n'.join('{}'.format(data)))
 
 
   @Plugin.command('echo', '<content:str...>')

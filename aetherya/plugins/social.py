@@ -39,7 +39,7 @@ class SocialPlugin(Plugin):
       points = self.giveRandomPoints(min, max)
 
       data['points'] = int(data['points']) + points
-      with open(POINTS_DIR.format(event.message.author.id), "w") as file:
+      with open(POINTS_DIR.format(event.message.guild.id, event.message.author.id), 'w') as file:
         file.write(json.dumps(data, indent=2))
 
   @Plugin.command('points', '[user:user|snowflake]')

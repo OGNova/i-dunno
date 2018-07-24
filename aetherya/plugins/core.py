@@ -11,7 +11,7 @@ import disco.types.permissions as permissions
 from datetime import datetime
 
 from aetherya.constants import (
-  AETHERYA_CONTROL_CHANNEL, AETHERYA_UID, ENV, OWNER_ID, CODE_BLOCK
+  AETHERYA_CONTROL_CHANNEL, AETHERYA_UID, ENV, OWNER_ID, CODE_BLOCK, PY_CODE_BLOCK
 )
 
 BASE_DIR = 'data/guilds/{}.json'
@@ -105,7 +105,7 @@ class CorePlugin(Plugin):
         local = {}
 
         try:
-          compile(code, '<eval>', 'exec') in ctx, local
+          exec(compile(code, '<eval>', 'exec') in ctx, local)
         except Exception as e:
           event.msg.reply(PY_CODE_BLOCK.format(type(e).__name__ + ': ' + str(e)))
           return
